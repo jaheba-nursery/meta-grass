@@ -49,9 +49,13 @@ const JFF: usize = 9;
 const JTB: usize = 10;
 
 
+#[derive(PartialEq)]
 struct LoopID<'a> {
     pc: &'a mut usize,
-    program: &'a mut Vec<usize>,
+    program: &'a Vec<usize>,
+}
+
+impl<'a> grass::LoopIdentifier for LoopID<'a> {
 }
 
 struct Other<'a> {
@@ -63,8 +67,10 @@ struct MyMergePoint<'a> {
     other: Other<'a>,
 }
 
-impl<'a> grass::MergePoint for MyMergePoint<'a> {
-
+impl<'a> grass::MergePoint<LoopID<'a>> for MyMergePoint<'a> {
+    fn loop_identifier(&self) -> &LoopID<'a> {
+        &self.loop_id
+    }
 }
 
 pub fn main(mut program: Vec<usize>) {
